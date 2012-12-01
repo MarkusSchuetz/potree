@@ -15,10 +15,10 @@
 function Scene(name){
 	this.name = name;
 	this.rootNode = new SceneNode("root");
-	this.rootNode.setScene(this);
+	this.rootNode.scene = this;
 	this.cameras = new Object();
 	this.cameras["default"] = new Camera("default");
-	this.cameras["default"].setScene(this);
+	this.cameras["default"].scene = this;
 	this.lights = new Object();
 	this.activeCamera = this.cameras["default"];
 }

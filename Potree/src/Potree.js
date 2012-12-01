@@ -217,7 +217,21 @@ Potree.init = function(canvas) {
 	}
 	
 	Potree.initialized = true;
-	return true;
+	
+	// shaders
+	var drawTextureShader = new DrawTextureShader("drawTexture");
+	var defaultShader = new PhongShader("default");
+	var defaultFlat = new FlatShader("defaultFlat");
+	var aabbShader = new FlatShader("AABB");
+	
+	// materials
+	var aabbMaterial = new FlatMaterial("aabb");
+	var defaultMaterial = new PhongMaterial("default");
+	var pointCloudMaterial = new PointCloudMaterial("pointCloud");
+	
+	Potree.mainLoop();
+	
+	return Potree.initialized;
 };
 
 /**
@@ -326,24 +340,6 @@ Potree.createGridNode = function createGridNode() {
 };
 
 /**
- * updates the scenegraph with the specified amount of time. This is necessary to play animations.
- * 
- * @param time
- */
-Potree.update = function(time){
-	Potree.currentScene.rootNode.addTime(time);
-	
-//	debugView.set("Points:", addCommas(Potree.drawnPoints));
-//	debugView.set("Lines:", Potree.drawnLines);
-//	debugView.set("DrawCalls:", Potree.drawCalls);
-//	debugView.set("loading Nodes:", PointcloudOctreeNode.nodesLoadedThisFrame);
-//	if(PointcloudOctreeNode.lruNodes != null){
-//		debugView.set("loaded point cloud data", addCommas(PointcloudOctreeNode.lruNodes.byteSize));
-//	}
-	PointcloudOctreeNode.nodesLoadedThisFrame = 0;
-};
-
-/**
  * draws a frame to the canvas
  */
 Potree.draw = function() {
@@ -385,3 +381,61 @@ Potree.draw = function() {
 //	 window.webkitRequestAnimationFrame (Potree.draw);
 	//setTimeout(Potree.draw, 0);
 };
+
+
+Potree.mainLoop = function mainLoop(){
+	Potree.calculateTimeSinceLastFrame();
+
+	Potree.update(timeSinceLastFrame);
+	Potree.draw();
+	
+	// with 0ms, interaction becomes a lot slower in firefox.
+	setTimeout(mainLoop, 10);
+};
+
+var lastLoopTime = null;
+var timeSinceLastFrame = null;
+Potree.calculateTimeSinceLastFrame = function calculateTimeSinceLastFrame(){
+	var newDrawTime = new Date().getTime();
+	var fps = null;
+	if (lastLoopTime != null) {
+		timeSinceLastFrame = (newDrawTime - lastLoopTime) / 1000.0;
+	}else{
+		timeSinceLastFrame = 0;
+	}
+	lastLoopTime = new Date().getTime();
+
+};
+
+
+var fpsHistory = new Array();
+Potree.update = function update(time){
+	
+	var fps = 1 / time;
+
+	fpsHistory.push(fps);
+	if(fpsHistory.length > 10){
+		fpsHistory.splice(0, 1);
+	}
+	var mean = 0;
+	for(var i = 0; i < fpsHistory.length; i++){
+		mean += fpsHistory[i];
+	}
+	mean = mean / fpsHistory.length;
+	
+	Potree.currentScene.rootNode.addTime(time);
+	PointcloudOctreeNode.nodesLoadedThisFrame = 0;
+	
+	Potree.camHandler.update(time);
+//	debugView.set("FPS:", mean.toFixed(2));
+};
+
+
+
+
+
+
+
+
+
+

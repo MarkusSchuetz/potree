@@ -181,7 +181,8 @@ Logger.createGUI = function(){
 	Logger.cRoot.appendChild(Logger.cTableContainer);
 	document.body.appendChild(Logger.cRoot);
 	
-	Logger.windowState = LoggerWindowState.VISIBLE;
+	Logger.windowState = LoggerWindowState.HIDDEN;
+	Logger.cRoot.style.visibility = "hidden";
 };
 
 Logger.trace = function(message){

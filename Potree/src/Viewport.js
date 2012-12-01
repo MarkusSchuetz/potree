@@ -161,11 +161,6 @@ Viewport.prototype.invokeMouseWheel = function(delta){
 	
 	var scene = this.camera.scene;
 	var root = scene.rootNode;
-	//var pointCloud = root.children["012/012/r"];
-//	var pointCloud = root.children["012/012/r7000"];
-	
-	this.camera.needsUpdate = true;
-	this.camera.resolve();
 };
 
 

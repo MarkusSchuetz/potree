@@ -42,7 +42,7 @@ Object.defineProperties(Camera.prototype, {
 	},
 	"transform": {
 		set: function(transform){
-			this._transform = transform;
+			Object.getOwnPropertyDescriptor(Camera.base, 'transform').set.call(this, transform);
 			this.updateViewMatrix();
 		},
 		get: function(){

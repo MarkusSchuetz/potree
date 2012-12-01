@@ -6,58 +6,41 @@
 
 <script type="text/javascript" src="src/Potree.js"></script>
 <script type="text/javascript" >Potree.importScripts("./");</script>
-<script src="pointclouds.js"></script>
-<script src="page.js"></script>
 
 <script type="text/javascript">
-function requestFullscreen(target){
-	if (target.requestFullScreen) {  
-		if(document.fullscreen){
-			document.exitFullscreen();
-		}else{
-			target.requestFullScreen();  
-		}
-	} else if (target.mozRequestFullScreen) {
-		if(document.mozFullScreen){
-			document.mozCancelFullScreen();
-		}else{
-			target.mozRequestFullScreen();  
-		}
-	} else if (target.webkitRequestFullScreen) {  
-		if(document.webkitIsFullScreen){
-			document.webkitCancelFullScreen();
-		}else{
-			target.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);  
-		}
+
+
+function init() {
+	var success = Potree.init($('canvas'));
+	if(!success){
+		return;
 	}
+	
+	var scene = Potree.currentScene;
+	var cloudURL = "resources/pointClouds/tower/potree/cloud.js";
+	
+	var pcoNode = POCLoader.load(cloudURL);
+	scene.rootNode.addChild(pcoNode);
+	
+	pcoNode.transform = [-1, 0, 0, 0,
+					      0, 0, 1, 0,
+					      0, 1, 0, 0,
+					      0, 0, 0, 1];
+	
+	$('canvas').focus();
 }
+
 
 </script>
     
 </head>
  <body onload="init()" class="claro">
- 
- 	<div id="pointClouds" >
-		<!-- pointclouds from pointclouds.js will be added here -->
-	</div>
 
-	<div  id="borderContainer">
-		<div id="workarea">
-			<canvas id="canvas" width="800" height="600" tabIndex="1"
-				ondblclick="requestFullscreen(this)">
-				Your Browser does not support WebGL. Try the newest version of Firefox or Google Chrome.
-			</canvas>
-		</div>
+	<div id="workarea" style="width: 100%; height: 100%">
+		<canvas id="canvas" width="800" height="600" tabIndex="1">
+			Your Browser does not support WebGL. Try the newest version of Firefox or Google Chrome.
+		</canvas>
 	</div>
 	
-	<div id="settingsContainer">
-	asd
-	</div>
-	
-	<br>
-	<br>
-	asdf
-	sadf<br>
-	sdf
 </body>
 </html>

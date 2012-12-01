@@ -18,7 +18,7 @@
  * @class
  * @augments SceneNode
  */
-function PointcloudOctreeSceneNode(name, mno, parent){
+function PointcloudOctreeSceneNode(mno, parent){
 	SceneNode.call(this, name, parent);
 	this.mno = mno;
 	

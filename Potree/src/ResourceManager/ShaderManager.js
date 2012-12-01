@@ -69,7 +69,7 @@ ShaderManager.getShaderSource = function(name){
 ShaderManager.addShader = function(shader){
 	if(ShaderManager.getShader(shader.name) != null){
 		var message= "shader has already been created: " + shader.name;
-		logError(message);
+		Logger.error(message);
 		throw message;
 	}
 	

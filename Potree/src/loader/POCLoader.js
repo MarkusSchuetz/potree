@@ -26,44 +26,50 @@ function POCLoader(){
  * @param file the xml mno file
  * @param loadingFinishedListener executed after loading the binary has been finished
  */
-POCLoader.prototype.load = function load(file) {
-	this.mno = new PointcloudOctree();
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', file, false);
-	xhr.send(null);
-	if(xhr.status == 200 || xhr.status == 0){
-		var fMno = JSON.parse(xhr.responseText);
-		
-		this.mno.octreeDir = file + "/../data";
-		var pointAttributes = POCLoader.loadPointAttributes(fMno);
-		this.mno.setPointAttributes(pointAttributes);
-		
-		{ // load Root
-			var mRoot = new PointcloudOctreeNode("r", this.mno);
-			var aabb = new AABB();
-			aabb.setDimensionByMinMax(
-					[ fMno.boundingBox.lx, fMno.boundingBox.ly, fMno.boundingBox.lz ],  
-					[ fMno.boundingBox.ux, fMno.boundingBox.uy, fMno.boundingBox.uz ]);
-			mRoot.setAABB(aabb);
-			mRoot.points = fMno.hierarchy[0][1];
-			this.mno.rootNode = mRoot;
+POCLoader.load = function load(file) {
+	try{
+		var pco = new PointcloudOctree();
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', file, false);
+		xhr.send(null);
+		if(xhr.status == 200 || xhr.status == 0){
+			var fMno = JSON.parse(xhr.responseText);
+			
+			pco.octreeDir = file + "/../data";
+			var pointAttributes = POCLoader.loadPointAttributes(fMno);
+			pco.setPointAttributes(pointAttributes);
+			
+			{ // load Root
+				var mRoot = new PointcloudOctreeNode("r", pco);
+				var aabb = new AABB();
+				aabb.setDimensionByMinMax(
+						[ fMno.boundingBox.lx, fMno.boundingBox.ly, fMno.boundingBox.lz ],  
+						[ fMno.boundingBox.ux, fMno.boundingBox.uy, fMno.boundingBox.uz ]);
+				mRoot.setAABB(aabb);
+				mRoot.points = fMno.hierarchy[0][1];
+				pco.rootNode = mRoot;
+			}
+			
+			// load remaining hierarchy
+			for( var i = 1; i < fMno.hierarchy.length; i++){
+				var nodeName = fMno.hierarchy[i][0];
+				var points = fMno.hierarchy[i][1];
+				var mNode = new PointcloudOctreeNode(nodeName, pco);
+				mNode.points = points;
+				pco.rootNode.addChild(mNode);
+				var childIndex = mNode.name.charAt(mNode.name.length-1);
+				var childAABB = POCLoader.createChildAABB(mNode.parent.aabb, childIndex);
+				mNode.setAABB(childAABB);
+			}
+			
 		}
 		
-		// load remaining hierarchy
-		for( var i = 1; i < fMno.hierarchy.length; i++){
-			var nodeName = fMno.hierarchy[i][0];
-			var points = fMno.hierarchy[i][1];
-			var mNode = new PointcloudOctreeNode(nodeName, this.mno);
-			mNode.points = points;
-			this.mno.rootNode.addChild(mNode);
-			var childIndex = mNode.name.charAt(mNode.name.length-1);
-			var childAABB = POCLoader.createChildAABB(mNode.parent.aabb, childIndex);
-			mNode.setAABB(childAABB);
-		}
-		
+		var pcoNode = new PointcloudOctreeSceneNode(pco);
+		return pcoNode;
+	}catch(e){
+		Logger.error("loading failed: '" + file + "'");
+		Logger.error(e);
 	}
-	
-	return this.mno;
 };
 
 POCLoader.loadPointAttributes = function(mno){

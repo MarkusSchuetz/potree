@@ -14,39 +14,52 @@
  */
 function SceneNode(name, parent) {
 	if (arguments[0] === inheriting) return;
-	this.scene = null;
+	this._scene = null;
 	this.name = name;
 	this.parent = parent;
 	this.children = new Object();
 	this.descendants = new Array();
 	this.aabb = null;
-	this.visible = true;
+	this._visible = true;
 
 	// age in s
 	this.age = 0;
 
-	// Node befindet sich in einem unvollständigen zustand.
-	// Mittels resolve() wird das Node sowie alle Child-Nodes aktualisiert.
-	this.needsUpdate = true;
-
 	this._transform = M4x4.I;
-//	this.globalTransform = M4x4.I;
 	if (parent != null) {
 		parent.addChild(this);
 		this.scene = parent.scene;
 	}
 }
 
-SceneNode.prototype.setVisible = function setVisible(visible){
-	this.visible = visible;
-};
-
-SceneNode.prototype.setNeedsUpdate = function() {
-	this.needsUpdate = true;
-	for ( var index in this.children) {
-		this.children[index].setNeedsUpdate();
+Object.defineProperty(SceneNode.prototype, 'visible', {
+	set: function(visible){
+		this._visible = visible;
+	},
+	
+	get: function(){
+		return this._visible;
 	}
-};
+});
+
+Object.defineProperty(SceneNode.prototype, 'scene', {
+	set: function(scene){
+		this._scene = scene;
+	},
+	
+	get: function(){
+		return this._scene;
+	}
+});
+
+Object.defineProperty(SceneNode.prototype, "transform", {
+	get: function(){
+		return this._transform;
+	},
+	set: function(transform){
+		this._transform = transform;
+	}
+});
 
 SceneNode.prototype.addTime = function(time) {
 	this.age += time;
@@ -54,10 +67,6 @@ SceneNode.prototype.addTime = function(time) {
 	for ( var childname in this.children) {
 		this.children[childname].addTime(time);
 	}
-};
-
-SceneNode.prototype.setScene = function(scene) {
-	this.scene = scene;
 };
 
 SceneNode.prototype.setParent = function(parent) {
@@ -75,12 +84,8 @@ SceneNode.prototype.addChild = function(child) {
 	child.parent = this;
 	child.scene = this.scene;
 	this.children[child.name] = child;
-	child.notifyChildAttachedToParent();
 };
 
-SceneNode.prototype.notifyChildAttachedToParent = function() {
-
-};
 
 SceneNode.prototype.getLocalTransformation = function() {
 	return this._transform;
@@ -144,15 +149,6 @@ SceneNode.prototype.getViewVector = function() {
 
 	return view;
 };
-
-Object.defineProperty(SceneNode.prototype, "transform", {
-	get: function(){
-		return this._transform;
-	},
-	set: function(transform){
-		this._transform = transform;
-	}
-});
 
 
 /**
@@ -229,7 +225,6 @@ SceneNode.prototype.toString = function() {
 SceneNode.prototype.asTreeString = function(level) {
 	var msg = " ".repeat(level * 3) + this.name + "\t"
 			+ this.getGlobalPosition() + "\n";
-	// msg += this.getGlobalTransformation().toMatrixFormString() + "\n";
 	for ( var child in this.children) {
 		msg += this.children[child].asTreeString(level + 1);
 	}
