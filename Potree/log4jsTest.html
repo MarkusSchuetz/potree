@@ -1,0 +1,51 @@
+<html>
+<head>
+
+<script type="text/javascript" src="src/utils/LogConsole.js"></script>
+
+<script type="text/javascript">
+
+function functionWithAName(){
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.trace("trace");
+	Logger.debug("debug");
+	Logger.info("display something interesting");
+	Logger.success("yeah. Something went right.");
+	Logger.error("damn. An error occured.");
+	Logger.info("Messages over <br>multiple rows</br>are also possible");
+	
+	functionWithLongName();
+	LogTest.doSomeLogs();
+}
+
+function functionWithLongName(){
+	Logger.trace("abcdefg");
+}
+
+function LogTest(){
+	
+}
+
+LogTest.doSomeLogs = function(){
+	Logger.info("logging from function without name");
+}
+
+</script>
+
+</head>
+<body onload="functionWithAName()">
+
+<div id="myDiv">
+	<div id="theValue"></div>
+</div>
+
+</body>
+</html>

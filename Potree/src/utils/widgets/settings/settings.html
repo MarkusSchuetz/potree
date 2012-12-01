@@ -1,0 +1,35 @@
+<div id="debug">
+	<table>
+	<tr>
+			<td>show Grid</td>
+			<td><input id="chkShowGrid" type="checkbox" name="chkShowGrid" value="false"/></td>
+		</tr>
+		<!-- 
+		<tr>
+			<td>show Bounding Boxes</td>
+			<td><input id="chkShowBoundingBoxes" type="checkbox" name="chkShowBoundingBoxes" value="false"/></td>
+		</tr> -->
+		<tr>
+			<td>Frustum culling</td>
+			<td><input id="chkFrustumCulling" type="checkbox" name=""chkFrustumCulling"" value="true" checked/></td>
+		</tr>
+		<tr>
+			<td>turn on LOD</td>
+			<td><input id="chkActivateLOD" type="checkbox" name=""chkActivateLOD"" value="true" checked/></td>
+		</tr>
+		<tr>
+			<td>LOD multiplicator</td>
+			<td><input id="nrLODMultiplicator" size="5" maxlength="5" value="3.0" onKeyPress="return numbersonly(this, event, true)"></td>
+		</tr>
+		<tr>
+			<td>Cache Size(MB)</td>
+			<td><input id="nrCacheSize" size="5" maxlength="5" value="500.0" onKeyPress="return numbersonly(this, event, true)"></td>
+		</tr>
+	</table>
+	<fieldset>
+		<legend>Cameramode</legend>
+		<input type="radio" name="cameraMode" id="cameraModeFreeFlight" checked onclick="setCameraMode('freeFlight')" />
+		<label for="cameraModeFreeFlight">FreeFlight</label><br>
+	</fieldset>
+</div>
+

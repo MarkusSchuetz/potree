@@ -1,0 +1,25 @@
+
+
+Key is the filename.
+Keycode:
+Number of digits == level, digit == octree index, key "r" == root
+Examples:
+key "r" == root
+key "r0" == 1 digit == level 1, equals root subcell 0
+key "r317" == 3 characters == level 3, from root subcell 3, then 1, then 7.
+
+Index:                            z          Java3D
+                3    7 upper      ^    y
+       1    5                     |  /
+                2    6            |/
+ lower 0    4                     o-----> x
+
+ 
+ 
+ 
+ 
+Index:                            y          Java3D
+                3    1 upper      ^    -z
+       1    3                     |  /
+                2    0            |/
+ lower 0    2                     o-----> x
