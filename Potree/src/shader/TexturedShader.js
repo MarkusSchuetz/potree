@@ -35,7 +35,7 @@ TexturedShader.prototype.initAttributes = function(){
 
 TexturedShader.prototype.renderMesh = function(meshNode, subMesh, camera){
 	gl.useProgram(this.program);
-	gl.uniformMatrix4fv(this.uWorld, false, meshNode.getGlobalTransformation());
+	gl.uniformMatrix4fv(this.uWorld, false, meshNode.globalTransformation);
 	gl.uniformMatrix4fv(this.uView, false, camera.getViewMatrix());
 	gl.uniformMatrix4fv(this.uProjection, false, camera.projectionMatrix);
 	

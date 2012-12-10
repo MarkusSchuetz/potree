@@ -48,7 +48,7 @@ PhongMaterial.prototype.renderPointcloudOctree = function(mno, mnoSceneNode, cam
 		var node = mnoNodes[i];
 		var pointCloud = node.pointCloud;
 		var pointAttributes = mnoSceneNode.mno.pointAttributes;
-		var viewPos = camera.getGlobalPosition();
+		var viewPos = camera.globalPosition;
 		
 //		var numChildren = 0;
 //		var visibilityMultiplicator = 0;
@@ -61,7 +61,7 @@ PhongMaterial.prototype.renderPointcloudOctree = function(mno, mnoSceneNode, cam
 		gl.useProgram(shader.program);
 		
 		{ // uniforms
-			gl.uniformMatrix4fv(shader.uWorld, false, mnoSceneNode.getGlobalTransformation());
+			gl.uniformMatrix4fv(shader.uWorld, false, mnoSceneNode.globalTransformation);
 			gl.uniformMatrix4fv(shader.uView, false, camera.viewMatrix);
 			gl.uniformMatrix4fv(shader.uProjection, false, camera.projectionMatrix);
 			gl.uniform1f(shader.uPointSizeMultiplicator, node.opacity * this.pointSize );
@@ -97,26 +97,22 @@ PhongMaterial.prototype.renderPointcloudOctree = function(mno, mnoSceneNode, cam
 	}
 };
 
-PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, camera){
+PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue, camera){
 	var shader = this.subMeshPhongShader;
 	
-	var scene = camera.scene;
+//	var scene = camera.scene;
 	var mesh = meshNode.mesh;
 	gl.useProgram(shader.program);
+	
+	gl.enable(gl.DEPTH_TEST);
+	gl.depthFunc(gl.LEQUAL);
 
 	// uniforms
-	gl.uniformMatrix4fv(shader.uWorld, false, meshNode.getGlobalTransformation());
+	gl.uniformMatrix4fv(shader.uWorld, false, meshNode.globalTransformation);
 	gl.uniformMatrix4fv(shader.uView, false, camera.viewMatrix);
 	gl.uniformMatrix4fv(shader.uProjection, false, camera.projectionMatrix);
-	var viewPos = camera.getGlobalPosition();
+	var viewPos = camera.globalPosition;
 	gl.uniform3f(shader.uViewPos, viewPos[0], viewPos[1], viewPos[2]);
-	
-	// TODO find better solution for lights
-	if(shader.uLightPos != null){
-		var light = scene.lights[Object.keys(scene.lights)[0]];
-		var lightPos = light.getGlobalPosition();
-		gl.uniform3f(shader.uLightPos, lightPos[0], lightPos[1], lightPos[2]);
-	}
 	
 	// vertex attributes
 	gl.enableVertexAttribArray(shader.aVertexPosition);
@@ -136,13 +132,41 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, camera){
 		gl.vertexAttribPointer(shader.aNormal, 3, gl.FLOAT, false, 0, 0);
 	}
 	
-	if(subMesh.ibo != null){
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, subMesh.ibo);
-		gl.drawElements(mesh.glType, subMesh.indices.length, gl.UNSIGNED_BYTE, 0);
-		Potree.drawCalls += 1;
-	}else if(subMesh.vertexCount != null){
-		gl.lineWidth(10.0);
-		gl.drawArrays(mesh.glType, 0, subMesh.vertexCount);
-		Potree.drawCalls += 1;
+	var lights = renderQueue.lights;
+//	var lights = {}; //scene.lights;
+//	lights["light1"] = new Light("light1");
+//	lights["light1"].translate(-30,10,10);
+//	lights["light2"] = new Light("light2");
+//	lights["light2"].translate(+30,10,10);
+	
+	var i = 0;
+	for(var i = 0; i < lights.length; i++){
+		var light = lights[i];
+		var lightPos = light.globalPosition;
+		gl.uniform3f(shader.uLightPos, lightPos[0], lightPos[1], lightPos[2]);
+		gl.uniform3f(shader.uLightColor, light.red, light.green, light.blue);
+		
+		if(i == 0){
+			gl.depthFunc(gl.LEQUAL); 
+			gl.cullFace(gl.BACK); 
+			gl.disable(gl.BLEND);
+		}else{
+			gl.enable(gl.BLEND);
+			gl.blendFunc(gl.ONE, gl.ONE);
+		}
+		
+		
+		if(subMesh.ibo != null){
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, subMesh.ibo);
+			gl.drawElements(mesh.glType, subMesh.indices.length, gl.UNSIGNED_SHORT, 0);
+			Potree.drawCalls += 1;
+		}else if(subMesh.vertexCount != null){
+			gl.lineWidth(10.0);
+			gl.drawArrays(mesh.glType, 0, subMesh.vertexCount);
+			Potree.drawCalls += 1;
+		}
 	}
+	
+	gl.disable(gl.BLEND);
+	
 };

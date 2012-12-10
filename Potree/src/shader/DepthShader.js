@@ -13,23 +13,19 @@
  * @class
  * @augments Shader
  */
-function PhongShader(name) {
+function DepthShader(name) {
 	if (arguments[0] === inheriting) return;
-	Shader.call(this, name, "phong.vs", "phong.fs");
+	Shader.call(this, name, "depth.vs", "depth.fs");
 }
 
-PhongShader.prototype = new Shader(inheriting);
+DepthShader.prototype = new Shader(inheriting);
 
-PhongShader.prototype.initUniforms = function() {
+DepthShader.prototype.initUniforms = function() {
 	this.uWorld = gl.getUniformLocation(this.program, "world");
 	this.uView = gl.getUniformLocation(this.program, "view");
 	this.uProjection = gl.getUniformLocation(this.program, "proj");
-	this.uLightPos = gl.getUniformLocation(this.program, "lightPos");
-	this.uLightColor = gl.getUniformLocation(this.program, "lightColor");
-	this.uViewPos = gl.getUniformLocation(this.program, "uViewPos");
 };
 
-PhongShader.prototype.initAttributes = function() {
+DepthShader.prototype.initAttributes = function() {
 	this.aVertexPosition = gl.getAttribLocation(this.program, "aVertexPosition");
-	this.aNormal = gl.getAttribLocation(this.program, "aNormal");
 };

@@ -101,9 +101,7 @@ PointcloudOctree.prototype.prepareRender = function prepareRender(pocSceneNode, 
 	var stack = new Array();
 	stack.push(this.rootNode);
 	
-//	var world = pocSceneNode.getGlobalTransformation();
 	var view = camera.viewMatrix;
-//	var trans = M4x4.mul(view, pocSceneNode.getGlobalTransformation());
 	var frustum = null;
 	if(Potree.Settings.frustumCulling){
 		frustum = camera.frustum;
@@ -119,7 +117,7 @@ PointcloudOctree.prototype.prepareRender = function prepareRender(pocSceneNode, 
 			if(PointcloudOctree.visibilityToggle >= 5){
 			// update aabb transformation only if frustum culling is enabled or node is visible and lod is enabled
 			if(Potree.Settings.frustumCulling || (shouldBeRendered && Potree.Settings.LOD)){
-					current.aabb.setTransform(pocSceneNode.getGlobalTransformation());
+					current.aabb.setTransform(pocSceneNode.globalTransformation);
 			}
 			
 			

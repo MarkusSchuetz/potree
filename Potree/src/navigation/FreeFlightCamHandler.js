@@ -100,7 +100,7 @@ FreeFlightCamHandler.prototype.invokeMouseDrag = function(event, pressedKeys, di
 		this.camera.translate((this.speedMultiplier * -diffX) / 10.0, (this.speedMultiplier * diffY) / 10.0, 0);
 		this.qualityToggle = 0.1;
 	}else if(pressedKeys.length == 1 && pressedKeys.contains(0)){
-		var pos = this.camera.getLocalPosition();
+		var pos = this.camera.localPosition;
 		
 		var toOrigin = M4x4.translate3(-pos[0], -pos[1], -pos[2], M4x4.I);
 		var rotY = M4x4.rotate(-diffX / 100.0, [0,1,0], M4x4.I);

@@ -40,7 +40,7 @@ function Frustum(){
 Frustum.fromCamera = function(camera){
 	var frustum = new Frustum();
 	
-	var world = camera.getGlobalTransformation();
+	var world = camera.globalTransformation;
 	
 	var heightNear = 2*camera.nearClipPlane*Math.tan(camera.fieldOfView * Math.PI / 360);
 	var heightFar =  2*camera.farClipPlane*Math.tan(camera.fieldOfView * Math.PI / 360);

@@ -18,4 +18,5 @@ void main(void){
 	vTextureCoord = aTextureCoord;
 	world_pos = (world * vec4(aVertexPosition, 1.0)).xyz;
 	gl_Position = proj * view * world * vec4(aVertexPosition, 1.0);
+	gl_PointSize = 3.0;
 } 

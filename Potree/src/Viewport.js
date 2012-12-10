@@ -123,7 +123,7 @@ Viewport.prototype.invokeMouseMove = function(event, diffX, diffY){
 Viewport.prototype.invokeMouseDrag = function(event, pressedKeys, diffX, diffY){
 	if(pressedKeys.length == 1 && pressedKeys.contains(1)){
 		if(event.altKey){
-			var pos = this.camera.getLocalPosition();
+			var pos = this.camera.localPosition;
 			
 			var toOrigin = M4x4.translate3(-pos[0], -pos[1], -pos[2], M4x4.I);
 			var rotY = M4x4.rotate(-diffX / 100.0, this.camera.getUpVector(), M4x4.I);

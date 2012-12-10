@@ -1,0 +1,60 @@
+<html>
+<head>
+
+<link rel="stylesheet" type="text/css" href="resources/style/potree.css" />
+<script type="text/javascript" src="config.js"></script>
+
+<script type="text/javascript" src="src/Potree.js"></script>
+<script type="text/javascript" >Potree.importScripts("./");</script>
+
+<script type="text/javascript">
+
+
+function init() {
+	Potree.useDebugContext = true;
+	var success = Potree.init($('canvas'));
+	if(!success){
+		return;
+	}
+	
+	var scene = Potree.currentScene;	
+	var cam = scene.activeCamera;
+	$('canvas').focus();
+	
+	cam.translate(0,1,5);
+	
+	var light1 = new Light("light1", scene.rootNode);
+	light1.translate(5,3,5);
+	light1.colour = [0, 1, 0];
+	
+	var light2 = new Light("light2", scene.rootNode);
+	light2.translate(-5,3,5);
+	light2.colour = [1, 0, 0];
+	light2.castShadows = true;
+
+	var light3 = new Light("light3", scene.rootNode);
+	light3.translate(0,3,-5);
+	light3.colour = [0, 0, 1];
+	
+	
+	var sphere = new Sphere("sphere1", scene.rootNode);
+	sphere.translate(0,1,0);
+	
+	var plane = new Plane("plane1", scene.rootNode);
+	plane.scale(5000,1,5000);
+}
+
+
+</script>
+    
+</head>
+ <body onload="init()" class="claro">
+
+	<div id="workarea" style="width: 100%; height: 100%">
+		<canvas id="canvas" width="800" height="600" tabIndex="1">
+			Your Browser does not support WebGL. Try the newest version of Firefox or Google Chrome.
+		</canvas>
+	</div>
+	
+</body>
+</html>

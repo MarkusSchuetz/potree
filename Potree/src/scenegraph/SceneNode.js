@@ -18,7 +18,6 @@ function SceneNode(name, parent) {
 	this.name = name;
 	this.parent = parent;
 	this.children = new Object();
-	this.descendants = new Array();
 	this.aabb = null;
 	this._visible = true;
 
@@ -61,53 +60,52 @@ Object.defineProperty(SceneNode.prototype, "transform", {
 	}
 });
 
-SceneNode.prototype.addTime = function(time) {
-	this.age += time;
-
-	for ( var childname in this.children) {
-		this.children[childname].addTime(time);
+Object.defineProperty(SceneNode.prototype, 'localTransformation', {
+	get: function(){
+		return this._transform;
 	}
-};
+});
 
-SceneNode.prototype.setParent = function(parent) {
-	delete parent[this.name];
-	this.parent = parent;
-	parent.children[this.name] = this;
-	this.scene = parent.scene;
-};
-
-SceneNode.prototype.addChild = function(child) {
-	if (child.parent != null) {
-		delete child.parent.children[child.name];
+Object.defineProperty(SceneNode.prototype, 'globalTransformation', {
+	get: function(){
+		var cur = this;
+		var globalTransform = cur._transform;
+		while (cur.parent != null) {
+			cur = cur.parent;
+			globalTransform = M4x4.mul(cur._transform, globalTransform);
+		}
+		return globalTransform;
 	}
+});
 
-	child.parent = this;
-	child.scene = this.scene;
-	this.children[child.name] = child;
-};
-
-
-SceneNode.prototype.getLocalTransformation = function() {
-	return this._transform;
-};
-
-SceneNode.prototype.getGlobalTransformation = function getGlobalTransformation() {
-	var cur = this;
-	var globalTransform = cur._transform;
-	while (cur.parent != null) {
-		cur = cur.parent;
-		globalTransform = M4x4.mul(cur._transform, globalTransform);
+Object.defineProperty(SceneNode.prototype, 'localPosition', {
+	get: function(){
+		return V3.transform(V3.$(0, 0, 0), this._transform);
 	}
-	return globalTransform;
-};
+});
 
-SceneNode.prototype.getLocalPosition = function() {
-	return V3.transform(V3.$(0, 0, 0), this._transform);
-};
+Object.defineProperty(SceneNode.prototype, 'globalPosition', {
+	get: function(){
+		return V3.transform(V3.$(0, 0, 0), this.globalTransformation);
+	}
+});
 
-SceneNode.prototype.getGlobalPosition = function() {
-	return V3.transform(V3.$(0, 0, 0), this.getGlobalTransformation());
-};
+Object.defineProperty(SceneNode.prototype, 'descendants', {
+	get: function(){
+		var descendants = new Array();
+		var stack = new Array();
+		stack.push(this);
+		while(stack.length != 0){
+			var node = stack.pop();
+			descendants.push(node);
+			for(var key in node.children) {
+				stack.push(node.children[key]);
+			}
+		}
+		
+		return descendants;
+	}
+});
 
 SceneNode.prototype.getLocalDirection = function(){
 	var pos1 = V3.transform(V3.$(0, 0, 0), this._transform);
@@ -118,7 +116,7 @@ SceneNode.prototype.getLocalDirection = function(){
 };
 
 SceneNode.prototype.getGlobalDirection = function(){
-	var transform = this.getGlobalTransformation();
+	var transform = this.globalTransformation;
 	var pos1 = V3.transform(V3.$(0, 0, 0), transform);
 	var pos2 = V3.transform(V3.$(0, 0, -1), transform);
 	
@@ -151,6 +149,32 @@ SceneNode.prototype.getViewVector = function() {
 };
 
 
+SceneNode.prototype.addTime = function(time) {
+	this.age += time;
+
+	for ( var childname in this.children) {
+		this.children[childname].addTime(time);
+	}
+};
+
+SceneNode.prototype.setParent = function(parent) {
+	delete parent[this.name];
+	this.parent = parent;
+	parent.children[this.name] = this;
+	this.scene = parent.scene;
+};
+
+SceneNode.prototype.addChild = function(child) {
+	if (child.parent != null) {
+		delete child.parent.children[child.name];
+	}
+
+	child.parent = this;
+	child.scene = this.scene;
+	this.children[child.name] = child;
+};
+
+
 /**
  * Liefert das Inverse der lokalen Transformationsmatrix unter der Annahme, dass
  * es sich um eine Matrix handelt, die nach Rückverschiebung zum Ursprung
@@ -159,7 +183,7 @@ SceneNode.prototype.getViewVector = function() {
  * @returns
  */
 SceneNode.prototype.getInverseLocalTransformation = function() {
-	var pos = this.getLocalPosition();
+	var pos = this.localPosition;
 	var toOrigin = M4x4.translate3(-pos[0], -pos[1], -pos[2], M4x4.I);
 	var atOrigin = M4x4.mul(toOrigin, this._transform);
 	var inverseOrthonormal = M4x4.inverseOrthonormal(atOrigin);
@@ -175,9 +199,9 @@ SceneNode.prototype.getInverseLocalTransformation = function() {
  * @returns
  */
 SceneNode.prototype.getInverseGlobalTransformation = function() {
-	var pos = this.getGlobalPosition();
+	var pos = this.globalPosition;
 	var toOrigin = M4x4.translate3(-pos[0], -pos[1], -pos[2], M4x4.I);
-	var atOrigin = M4x4.mul(toOrigin, this.getGlobalTransformation());
+	var atOrigin = M4x4.mul(toOrigin, this.globalTransformation);
 	var inverseOrthonormal = M4x4.inverseOrthonormal(atOrigin);
 
 	return M4x4.mul(inverseOrthonormal, toOrigin);
@@ -210,11 +234,11 @@ SceneNode.prototype.scale = function(x, y, z) {
 SceneNode.prototype.render = function(camera) {
 	// in unterklassen überschreiben
 
-	if(this.visible){
-		for ( var childname in this.children) {
-			this.children[childname].render(camera);
-		}
-	}
+//	if(this.visible){
+//		for ( var childname in this.children) {
+//			this.children[childname].render(camera);
+//		}
+//	}
 
 };
 
@@ -224,7 +248,7 @@ SceneNode.prototype.toString = function() {
 
 SceneNode.prototype.asTreeString = function(level) {
 	var msg = " ".repeat(level * 3) + this.name + "\t"
-			+ this.getGlobalPosition() + "\n";
+			+ this.globalPosition + "\n";
 	for ( var child in this.children) {
 		msg += this.children[child].asTreeString(level + 1);
 	}

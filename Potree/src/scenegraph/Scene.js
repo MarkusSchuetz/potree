@@ -23,5 +23,11 @@ function Scene(name){
 	this.activeCamera = this.cameras["default"];
 }
 
-
+Object.defineProperty(Scene.prototype, "nodes", {
+	get: function(){
+		var nodes = new Array();
+		nodes.push(this.rootNode);
+		nodes.push(this.rootNode.descendants);
+	}
+});
 

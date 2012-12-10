@@ -47,7 +47,7 @@ NormalsMaterial.prototype.renderPointcloudOctree = function(mno, mnoSceneNode, c
 		gl.useProgram(shader.program);
 		
 		{ // uniforms
-			gl.uniformMatrix4fv(shader.uWorld, false, mnoSceneNode.getGlobalTransformation());
+			gl.uniformMatrix4fv(shader.uWorld, false, mnoSceneNode.globalTransformation);
 			gl.uniformMatrix4fv(shader.uView, false, camera.viewMatrix);
 			gl.uniformMatrix4fv(shader.uProjection, false, camera.projectionMatrix);
 			gl.uniform1f(shader.uPointSizeMultiplicator, node.opacity * this.pointSize);

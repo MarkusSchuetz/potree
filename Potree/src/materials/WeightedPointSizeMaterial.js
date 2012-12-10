@@ -55,7 +55,7 @@ WeightedPointSizeMaterial.prototype.render = function render(mno, mnoSceneNode, 
 		
 		
 		{ // uniforms
-			gl.uniformMatrix4fv(this.shader.uWorld, false, mnoSceneNode.getGlobalTransformation());
+			gl.uniformMatrix4fv(this.shader.uWorld, false, mnoSceneNode.globalTransformation);
 			gl.uniformMatrix4fv(this.shader.uView, false, camera.viewMatrix);
 			gl.uniformMatrix4fv(this.shader.uProjection, false, camera.projectionMatrix);
 			gl.uniform1f(this.shader.uPointSizeMultiplicator, node.opacity * this.pointSize * visibilityMultiplicator);

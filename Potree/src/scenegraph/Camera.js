@@ -16,8 +16,8 @@
  */
 function Camera(name) {
 	SceneNode.call(this, name);
-	this.nearClipPlane = 0.1;
-	this._farClipPlane = 1000.0;
+	this.nearClipPlane = 1.1;
+	this._farClipPlane = 100.0;
 	this._fieldOfView = 60.0;
 	this._aspectRatio = 1;
 	this._viewMatrix = null;

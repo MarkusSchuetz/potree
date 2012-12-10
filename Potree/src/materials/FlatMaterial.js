@@ -60,7 +60,7 @@ FlatMaterial.prototype.renderAABB = function(aabb, sceneNode, camera){
 	gl.useProgram(shader.program);
 	
 	// uniforms
-//	gl.uniformMatrix4fv(shader.uWorld, false, sceneNode.getGlobalTransformation());
+//	gl.uniformMatrix4fv(shader.uWorld, false, sceneNode.globalTransformation);
 	gl.uniformMatrix4fv(shader.uWorld, false, M4x4.I);
 	gl.uniformMatrix4fv(shader.uView, false, camera.viewMatrix);
 	gl.uniformMatrix4fv(shader.uProjection, false, camera.projectionMatrix);
@@ -87,10 +87,10 @@ FlatMaterial.prototype.renderSubMesh = function(subMesh, meshNode, camera){
 	gl.useProgram(shader.program);
 
 	// uniforms
-	gl.uniformMatrix4fv(shader.uWorld, false, meshNode.getGlobalTransformation());
+	gl.uniformMatrix4fv(shader.uWorld, false, meshNode.globalTransformation);
 	gl.uniformMatrix4fv(shader.uView, false, camera.viewMatrix);
 	gl.uniformMatrix4fv(shader.uProjection, false, camera.projectionMatrix);
-	var viewPos = camera.getGlobalPosition();
+	var viewPos = camera.globalPosition;
 	gl.uniform3f(shader.uViewPos, viewPos[0], viewPos[1], viewPos[2]);
 	gl.uniform4f(shader.uColor, this.color[0], this.color[1], this.color[2], this.color[3]);
 	

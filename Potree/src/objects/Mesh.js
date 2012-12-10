@@ -47,10 +47,10 @@ Mesh.prototype.setType = function(type){
 	}
 };
 
-Mesh.prototype.render = function(meshNode, camera){
+Mesh.prototype.render = function(meshNode, renderQueue, camera){
 	for(var i = 0; i < this.subMeshes.length; i++){
 		var subMesh = this.subMeshes[i];
-		subMesh.render(meshNode, camera);
+		subMesh.render(meshNode, renderQueue, camera);
 	}
 };
 
@@ -110,8 +110,12 @@ SubMesh.prototype.setVertexCount = function(vertexCount){
 	this.vertexCount = vertexCount;
 };
 
-SubMesh.prototype.render = function(meshNode, camera){
-	this.material.renderSubMesh(this, meshNode, camera);
+SubMesh.prototype.render = function(meshNode, renderQueue, camera){
+	if(renderQueue.preferredMaterial != null){
+		renderQueue.preferredMaterial.renderSubMesh(this, meshNode, renderQueue, camera);
+	}else{
+		this.material.renderSubMesh(this, meshNode, renderQueue, camera);
+	}
 };
 
 

@@ -39,7 +39,7 @@ Framebuffer.getSystemBuffer = function(){
 	}
 	
 	return Framebuffer.systemBuffer;
-}
+};
 
 Framebuffer.getActiveBuffer = function(){
 	if(Framebuffer.activeBuffer == null){
@@ -47,11 +47,11 @@ Framebuffer.getActiveBuffer = function(){
 	}
 	
 	return Framebuffer.activeBuffer;
-}
+};
 
 Framebuffer.setActiveBuffer = function(buffer){
 	Framebuffer.activeBuffer = buffer;
-}
+};
 
 /**
  * change size of the framebuffer. 
@@ -275,6 +275,9 @@ Framebuffer.prototype.drawTexture = function(texture, start, end){
 	gl.vertexAttribPointer(mat.aTexcoords, 2, gl.FLOAT, false, 0, 0);
 	
 	gl.drawArrays(gl.TRIANGLES, 0, 6);
+	
+	gl.disableVertexAttribArray(mat.aVertexPosition);
+	gl.disableVertexAttribArray(mat.aTexcoords);
 	
 };
 

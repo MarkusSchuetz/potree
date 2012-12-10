@@ -52,14 +52,19 @@ Potree.includes = [
 	"src/shader/PointCloudNormalsShader.js",
 	"src/shader/WeightedPointSizeShader.js",
 	"src/shader/FixedPointSizeShader.js",
+	"src/shader/DepthShader.js",
 	"src/utils/Plane.js",
 	"src/utils/Frustum.js",
+	"src/rendering/RenderQueue.js",
+	"src/rendering/Renderer.js",
 	"src/scenegraph/AABB.js",
 	"src/scenegraph/SceneNode.js",
 	"src/scenegraph/Camera.js",
 	"src/scenegraph/Scene.js",
 	"src/scenegraph/MeshNode.js",
 	"src/scenegraph/Light.js",
+	"src/scenegraph/Sphere.js",
+	"src/scenegraph/Plane.js",
 	"src/objects/Mesh.js",
 	"src/Viewport.js",
 	"src/navigation/CamHandler.js",
@@ -81,6 +86,7 @@ Potree.includes = [
 	"src/materials/NormalsMaterial.js",
 	"src/materials/PointCloudMaterial.js",
 	"src/materials/FlatMaterial.js",
+	"src/materials/DepthMaterial.js",
 	"src/loader/POCLoader.js",
 	"src/loader/PointAttributes.js",
 	"src/utils/LRU.js",
@@ -223,11 +229,13 @@ Potree.init = function(canvas) {
 	var defaultShader = new PhongShader("default");
 	var defaultFlat = new FlatShader("defaultFlat");
 	var aabbShader = new FlatShader("AABB");
+	var depthShader = new DepthShader("depth");
 	
 	// materials
 	var aabbMaterial = new FlatMaterial("aabb");
 	var defaultMaterial = new PhongMaterial("default");
 	var pointCloudMaterial = new PointCloudMaterial("pointCloud");
+	var depthMaterial = new DepthMaterial("depth");
 	
 	Potree.mainLoop();
 	
@@ -261,7 +269,7 @@ Potree.initGL = function() {
 	}
 
 	if(Potree.useDebugContext){
-		 logWarn("using WebGLDebugUtils - debugcontext. Performance may suffer.");
+		 Logger.warn("using WebGLDebugUtils - debugcontext. Performance may suffer.");
 		 gl = WebGLDebugUtils.makeDebugContext(gl);
 	}
 	
@@ -364,7 +372,13 @@ Potree.draw = function() {
 	gl.viewport(0, 0, Potree.canvas.clientWidth, Potree.canvas.clientHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	scene.rootNode.render(cam);
+//	var renderQueue = new RenderQueue();
+//	renderQueue.setup(scene);
+	
+//	scene.rootNode.render(cam);
+	
+	var renderer = new Renderer();
+	renderer.render(scene);
 	
 	if(Potree.Settings.showGrid){
 		Potree.gridSceneNode.render(cam);

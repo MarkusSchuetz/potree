@@ -190,7 +190,7 @@ AABB.prototype.updateVBO = function(){
  * returns the distance from minPos to maxPos in projected space
  */
 AABB.prototype.getOnScreenSize = function(sceneNode, camera){
-	var world = sceneNode.getGlobalTransformation();
+	var world = sceneNode.globalTransformation;
 	var view = camera.viewMatrix;
 	var proj = camera.projectionMatrix;
 	

@@ -1,4 +1,0 @@
-potree
-======
-
-Potree
