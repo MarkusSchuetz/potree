@@ -82,7 +82,7 @@ Shader.prototype.relink = function(){
 	
 	gl.linkProgram(this.program);
 	if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-		logError(gl.getProgramInfoLog(this.program));
+		Logger.error(gl.getProgramInfoLog(this.program));
 		return;
 	}
 };

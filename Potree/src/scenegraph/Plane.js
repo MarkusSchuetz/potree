@@ -2,8 +2,8 @@
 
 function Plane(name, parent){
 	SceneNode.call(this, name, parent);
-	var tesselationX = 10
-	var tesselationZ = 10
+	var tesselationX = 100;
+	var tesselationZ = 100;
 	this._mesh = null;
 	this.tesselationX = tesselationX;
 	this.tesselationZ = tesselationZ;
@@ -38,8 +38,8 @@ Object.defineProperty(Plane.prototype, "mesh", {
 					normals.push(1);
 					normals.push(0);
 					
-					texCoords.push(0);
-					texCoords.push(0);
+					texCoords.push(x / this.tesselationX);
+					texCoords.push(z / this.tesselationZ);
 				}
 			}
 			

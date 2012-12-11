@@ -24,10 +24,13 @@ PhongShader.prototype.initUniforms = function() {
 	this.uWorld = gl.getUniformLocation(this.program, "world");
 	this.uView = gl.getUniformLocation(this.program, "view");
 	this.uProjection = gl.getUniformLocation(this.program, "proj");
+	this.uLightView = gl.getUniformLocation(this.program, "lightView");
+	this.uLightProjection = gl.getUniformLocation(this.program, "lightProj");
 	this.uLightPos = gl.getUniformLocation(this.program, "lightPos");
 	this.uLightColor = gl.getUniformLocation(this.program, "lightColor");
 	this.uViewPos = gl.getUniformLocation(this.program, "uViewPos");
 	this.uShadowMap = gl.getUniformLocation(this.program, "uShadowMap");
+	this.uCastShadows = gl.getUniformLocation(this.program, "castShadows");
 };
 
 PhongShader.prototype.initAttributes = function() {
