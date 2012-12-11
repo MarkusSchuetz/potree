@@ -27,9 +27,11 @@ PhongShader.prototype.initUniforms = function() {
 	this.uLightPos = gl.getUniformLocation(this.program, "lightPos");
 	this.uLightColor = gl.getUniformLocation(this.program, "lightColor");
 	this.uViewPos = gl.getUniformLocation(this.program, "uViewPos");
+	this.uShadowMap = gl.getUniformLocation(this.program, "uShadowMap");
 };
 
 PhongShader.prototype.initAttributes = function() {
 	this.aVertexPosition = gl.getAttribLocation(this.program, "aVertexPosition");
 	this.aNormal = gl.getAttribLocation(this.program, "aNormal");
+	this.aTextureCoord = gl.getAttribLocation(this.program, "aTextureCoord");
 };

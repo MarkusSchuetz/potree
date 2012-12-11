@@ -8,6 +8,7 @@ varying vec3 world_pos;
 
 uniform mat4 world;
 uniform sampler2D uTexture;
+uniform sampler2D uShadowMap;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 uViewPos;
@@ -27,4 +28,5 @@ void main(void){
 	col = col + vec3(1,1,1)*specular ;
 	
 	gl_FragColor = vec4(col, 1);
+	gl_FragColor = vec4(vTextureCoord, 0,1);
 } 

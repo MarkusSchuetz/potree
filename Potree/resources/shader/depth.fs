@@ -4,12 +4,9 @@ precision highp float;
 
 // vDepth.x:	The linear depth. 
 // vDepth.y:	DepthMap depth. 
-varying vec2 	vDepth; 
-varying vec3 vVertexColour;
-varying vec3 vNormal;
-varying vec3 vWorldPos;
+varying float depth; 
 
 
 void main(void){
-	gl_FragColor = vec4(vDepth.x / 5.0, 0.0, 0.0, 1.0);
+	gl_FragColor = vec4(depth, 0.0, 0.0, 1.0);
 } 

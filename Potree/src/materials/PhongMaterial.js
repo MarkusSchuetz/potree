@@ -145,6 +145,11 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue,
 		var lightPos = light.globalPosition;
 		gl.uniform3f(shader.uLightPos, lightPos[0], lightPos[1], lightPos[2]);
 		gl.uniform3f(shader.uLightColor, light.red, light.green, light.blue);
+		if(light.shadowmap != undefined){
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, light.shadowmap.texture.glid);
+			gl.uniform1i(shader.uTexture, 0);
+		}
 		
 		if(i == 0){
 			gl.depthFunc(gl.LEQUAL); 

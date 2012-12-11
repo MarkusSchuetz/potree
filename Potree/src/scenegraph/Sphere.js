@@ -44,6 +44,8 @@ Object.defineProperty(Sphere.prototype, "mesh", {
 					normals.push(y);
 					normals.push(z);
 					
+//					texCoords.push((x/2) + 0.5);
+//					texCoords.push((y/2) * 0.5);
 					texCoords.push(0);
 					texCoords.push(0);
 					

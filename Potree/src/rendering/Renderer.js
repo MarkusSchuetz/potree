@@ -17,7 +17,7 @@ Renderer.prototype.render = function(scene){
 	
 	Framebuffer.getActiveBuffer().bind();
 	Framebuffer.getSystemBuffer().bind();
-	
+
 	for(var i = 0; i < renderQueue.nodes.length; i++){
 		var node = renderQueue.nodes[i];
 		node.render(renderQueue, scene.activeCamera);
@@ -25,18 +25,15 @@ Renderer.prototype.render = function(scene){
 };
 
 Renderer.prototype.shadowmapping = function(light, renderQueue){
-	if(this.shadowmaps == undefined){
-		this.shadowmaps = {};
-	}
-	if(this.shadowmaps[light.name] == undefined){
-		this.shadowmaps[light.name] = new Framebuffer(512, 512);
+	if(light.shadowmap == undefined){
+		light.shadowmap = new FramebufferFloat32(512, 512);
 	}
 	
 	var oldBuffer = Framebuffer.getActiveBuffer();
-	this.shadowmaps[light.name].bind();
+	light.shadowmap.bind();
 	
 	var camera = new Camera();
-	camera.translate(2,1,10);
+	camera.translate(0,1,3);
 	
 	renderQueue.preferredMaterial = MaterialManager.getMaterial("depth");
 	for(var i = 0; i < renderQueue.nodes.length; i++){
@@ -45,6 +42,6 @@ Renderer.prototype.shadowmapping = function(light, renderQueue){
 	}
 	renderQueue.preferredMaterial = null;
 	
-	oldBuffer.drawTexture(this.shadowmaps[light.name].texture, [ 0.3, 0], [1, 1]);
+	oldBuffer.drawTexture(light.shadowmap.texture, [ 0.3, 0], [1, 1]);
 	
 };
