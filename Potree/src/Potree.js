@@ -57,6 +57,7 @@ Potree.includes = [
 	"src/utils/Frustum.js",
 	"src/rendering/RenderQueue.js",
 	"src/rendering/Renderer.js",
+	"src/rendering/ShadowMap.js",
 	"src/scenegraph/AABB.js",
 	"src/scenegraph/SceneNode.js",
 	"src/scenegraph/Camera.js",

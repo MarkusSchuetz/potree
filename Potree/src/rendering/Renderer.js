@@ -15,8 +15,8 @@ Renderer.prototype.render = function(scene){
 		}
 	}
 	
-	Framebuffer.getActiveBuffer().bind();
-	Framebuffer.getSystemBuffer().bind();
+//	Framebuffer.getActiveBuffer().bind();
+//	Framebuffer.getSystemBuffer().bind();
 
 //	renderQueue.preferredMaterial = MaterialManager.getMaterial("depth");
 	for(var i = 0; i < renderQueue.nodes.length; i++){
@@ -27,22 +27,33 @@ Renderer.prototype.render = function(scene){
 
 Renderer.prototype.shadowmapping = function(light, renderQueue){
 	if(light.shadowmap == undefined){
-		light.shadowmap = new FramebufferFloat32(1024, 1024);
+		light.shadowmap = new Array();
+		
+		var shadowmap = new ShadowMap(512, 512);
+		shadowmap.camera = new Camera("sm1");
+		shadowmap.camera.fieldOfView = 90;
+		
+		light.shadowmap = shadowmap;
 	}
 	
 	var oldBuffer = Framebuffer.getActiveBuffer();
-	light.shadowmap.bind();
 	
-	var camera = new Camera();
-	camera.translate(0,1,3);
+	var shadowmap = light.shadowmap;
+	shadowmap.framebuffer.bind();
+	gl.clearColor(1.0, 1.0, 1.0, 1.0);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	shadowmap.camera = new Camera("sm1");
+	shadowmap.camera.fieldOfView = 90;
+	shadowmap.camera.translate(light.globalPosition[0], light.globalPosition[1], light.globalPosition[2]);
 	
 	renderQueue.preferredMaterial = MaterialManager.getMaterial("depth");
 	for(var i = 0; i < renderQueue.nodes.length; i++){
 		var node = renderQueue.nodes[i];
-		node.render(renderQueue, camera);
+		node.render(renderQueue, shadowmap.camera);
 	}
 	renderQueue.preferredMaterial = null;
 	
-//	oldBuffer.drawTexture(light.shadowmap.texture, [ 0.3, 0], [1, 1]);
+	oldBuffer.bind();
+	oldBuffer.drawTexture(shadowmap.framebuffer.texture, [ 0.3, 0], [1, 1]);
 	
 };

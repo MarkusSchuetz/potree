@@ -42,8 +42,17 @@ function init() {
 	
 	var plane = new Plane("plane1", scene.rootNode);
 	plane.scale(50,1,50);
+	
+	alight = light2;
+	setInterval(moveLight, 10);
 }
 
+var alight = null;
+function moveLight(){
+	alight.rotateY(0.01);
+	
+	
+}
 
 </script>
     
