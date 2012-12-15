@@ -17,6 +17,41 @@ uniform bool castShadows;
 uniform mat4 lightView;
 uniform mat4 lightProj;
 
+float getShadow(vec3 L, vec3 pos){
+	vec4 pl = lightProj*lightView*vec4(pos, 1.0);
+	pl.xyz = pl.xyz/pl.w;
+	
+	vec3 d = vec3(0.0, 0.0, 0.0);
+	d.x = L.x;
+	d.y = L.y;
+	d.z = -L.z;
+
+	vec4 refDepth = textureCube(uShadowMap, d);
+	float depth = length(lightPos - pos);
+	
+	float shadow = 0.0;
+	if(refDepth.x <= 0.0){
+		shadow = 0.0;
+	}else if( depth - 0.51 > refDepth.x){
+		shadow = 1.0;
+	}else{
+		shadow = 0.0;
+	}
+	
+	return shadow;
+}
+
+vec4 illuminate(vec3 L, vec3 N, vec3 E, vec3 R ){
+	float diffuse = clamp(dot(N, L), 0.0, 1.0);
+	float specular  = max(dot(E, -R),  0.0);
+	specular  = pow(specular , 32.0);
+	
+	vec4 illumination = vec4(0.0, 0.0, 0.0, 1.0);
+	illumination.xyz = lightColor*diffuse;
+	illumination.xyz = illumination.xyz + vec3(1,1,1)*specular;
+	
+	return illumination;
+}
 
 void main(void){
 	vec3 pos = world_pos;
@@ -25,41 +60,14 @@ void main(void){
 	vec3 R = reflect(L, N);
 	vec3 E = normalize(uViewPos - pos);
 	
-	float diffuse = clamp(dot(N, L), 0.0, 1.0);
-	float specular  = max(dot(E, -R),  0.0);
-	specular  = pow(specular , 32.0);
-	
-	vec3 col = lightColor*diffuse;
-	col = col + vec3(1,1,1)*specular ;
-	
-	gl_FragColor = vec4(col, 1);
-	gl_FragColor = vec4(vTextureCoord, 0,1);
+	vec4 col = illuminate(L, N, E, R);
 	
 	if(castShadows){
-		vec4 pl = lightProj*lightView*vec4(world_pos, 1.0);
-		pl.xyz = pl.xyz/pl.w;
-		
-		vec3 d = vec3(0.0, 0.0, 0.0);
-		d.x = L.x;
-		d.y = L.y;
-		d.z = -L.z;
-
-		vec4 refDepth = textureCube(uShadowMap, d);
-		float depth = length(lightPos - pos);
-		
-		if(refDepth.x <= 0.0){
-			gl_FragColor = vec4(col, 1.0);
-		}else if( depth - 0.51 > refDepth.x){
-			gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-		}else{
-			gl_FragColor = vec4(col, 1.0);
-		}
-		
-		//gl_FragColor = vec4(refDepth.x / 15.0, 0.0, 0.0, 1.0);
-		//gl_FragColor = vec4(d.x, 0.0, 0.0, 1.0);
-	}else{
-		gl_FragColor = vec4(col, 1.0);
+		float shadow = getShadow(L, pos);
+		col.xyz = col.xyz*(1.0-shadow);
 	}
+	
+	gl_FragColor = col;
 } 
 
 
