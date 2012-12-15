@@ -208,7 +208,9 @@ SceneNode.prototype.getInverseGlobalTransformation = function() {
 };
 
 SceneNode.prototype.translate = function(x, y, z) {
-	this._transform = M4x4.translate3(x, y, z, this._transform);
+//	this._transform = M4x4.translate3(x, y, z, this._transform);
+	this._transform = M4x4.mul(M4x4.makeTranslate3(x,y,z), this._transform);
+//	this._transform = M4x4.translate3(x, y, z, this._transform);
 };
 
 SceneNode.prototype.rotate = function(angle, axis) {

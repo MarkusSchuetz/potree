@@ -25,7 +25,7 @@ Float32Array.prototype.toString = function() {
 		msg += this[i] + ", ";
 	}
 	return msg;
-}
+};
 
 /**
  * Stellt die Werte des Arrays als NxN Matrix dar wobei N = Sqrt(length)
@@ -41,4 +41,43 @@ Float32Array.prototype.toMatrixFormString = function() {
 		// msg += this[i].toPrecision(2) + ", ";
 	}
 	return msg;
-}
+};
+
+
+Object.defineProperties(Float32Array.prototype, {
+	'x':  {
+		get: function(){
+			return this[0];
+		}
+	},
+	'y':  {
+		get: function(){
+			return this[1];
+		}
+	},
+	'z':  {
+		get: function(){
+			return this[2];
+		}
+	},
+	'r':  {
+		get: function(){
+			return this[0];
+		}
+	},
+	'g':  {
+		get: function(){
+			return this[1];
+		}
+	},
+	'b':  {
+		get: function(){
+			return this[2];
+		}
+	},
+	'a':  {
+		get: function(){
+			return this[3];
+		}
+	}
+});

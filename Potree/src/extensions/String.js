@@ -84,3 +84,9 @@ String.fromBuffer = function(buffer){
 	
 	return string;
 };
+
+Object.defineProperty(String.prototype, 'first', {
+	get: function(){
+		return "lala";
+	}
+});

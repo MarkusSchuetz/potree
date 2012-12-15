@@ -36,6 +36,7 @@ Potree.includes = [
 	"src/extensions/mjs.js",
 	"src/extensions/String.js",
 	"src/extensions/ArrayBuffer.js",
+	"src/extensions/Float32Array.js",
 	"src/utils/LogConsole.js",
 	"src/utils/utils.js",
 	"src/KeyListener.js",
@@ -53,6 +54,8 @@ Potree.includes = [
 	"src/shader/WeightedPointSizeShader.js",
 	"src/shader/FixedPointSizeShader.js",
 	"src/shader/DepthShader.js",
+	"src/shader/DrawTextureShader.js",
+	"src/shader/DrawCubemapShader.js",
 	"src/utils/Plane.js",
 	"src/utils/Frustum.js",
 	"src/rendering/RenderQueue.js",
@@ -72,8 +75,8 @@ Potree.includes = [
 	"src/navigation/FreeFlightCamHandler.js",
 	"src/Framebuffer.js",
 	"src/FramebufferFloat32.js",
+	"src/FramebufferFloat32Cube.js",
 	"src/ResourceManager/ShaderManager.js",
-	"src/shader/DrawTextureShader.js",
 	"src/utils/MeshUtils.js",
 	"src/utils/debug/debug.js",
 	"src/scenegraph/PointcloudOctreeSceneNode.js",
@@ -227,6 +230,7 @@ Potree.init = function(canvas) {
 	
 	// shaders
 	var drawTextureShader = new DrawTextureShader("drawTexture");
+	var drawCubemapShader = new DrawCubemapShader("drawCubemap");
 	var defaultShader = new PhongShader("default");
 	var defaultFlat = new FlatShader("defaultFlat");
 	var aabbShader = new FlatShader("AABB");
@@ -282,7 +286,7 @@ Potree.initGL = function() {
 	// basic settings
 	// =================================================
 	var cColor = Potree.Settings.backgroundColor;
-	gl.clearColor(cColor[0], cColor[1], cColor[2], cColor[3]);
+	gl.clearColor(cColor.r, cColor.g, cColor.b, cColor.a);
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
 //	gl.enable(gl.CULL_FACE);
@@ -371,6 +375,8 @@ Potree.draw = function() {
 	var cam = scene.activeCamera;
 	cam.aspectRatio = Potree.canvas.clientWidth / Potree.canvas.clientHeight;
 	gl.viewport(0, 0, Potree.canvas.clientWidth, Potree.canvas.clientHeight);
+	var cColor = Potree.Settings.backgroundColor;
+	gl.clearColor(cColor.r, cColor.g, cColor.b, cColor.a);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 //	var renderQueue = new RenderQueue();

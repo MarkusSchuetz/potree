@@ -9,9 +9,35 @@
 
 <script type="text/javascript">
 
+// Object.defineProperty(Float32Array.prototype, 'x', {
+// 	get: function(){
+// 		return this[0];
+// 	},
+// 	set: function(x){
+// 		this[0] = x;
+// 	}
+// });
+
+// Object.defineProperty(Float32Array.prototype, 'y', {
+// 	get: function(){
+// 		return this[1];
+// 	},
+// 	set: function(y){
+// 		this[1] = y;
+// 	}
+// });
+
+// Object.defineProperty(Float32Array.prototype, 'z', {
+// 	get: function(){
+// 		return this[2];
+// 	},
+// 	set: function(z){
+// 		this[2] = z;
+// 	}
+// });
 
 function init() {
-	Potree.useDebugContext = true;
+	Potree.useDebugContext = false;
 	var success = Potree.init($('canvas'));
 	if(!success){
 		return;
@@ -19,26 +45,56 @@ function init() {
 	
 	var scene = Potree.currentScene;	
 	var cam = scene.activeCamera;
+	cam.translate(0,1,10);
+	cam.rotateX(-Math.PI/8);
 	$('canvas').focus();
 	
-	cam.translate(0,1,5);
+// 	cam.fieldOfView = 90;
+// 	cam.rotateY(Math.PI/2);
+// 	cam.rotateX(-Math.PI/2);
+// 	cam.translate(0,3,6);
+	
+// 	document.writeln("orig: <pre>" + cam.transform.toMatrixFormString() + "</pre>");
+// 	cam.rotateY(Math.PI / 2.0);
+// 	document.writeln("rotate: <pre>" + cam.transform.toMatrixFormString() + "</pre>");
+// 	cam.translate(0,1,5);
+// 	document.writeln("rotate & translate: <pre>" + cam.transform.toMatrixFormString() + "</pre>");
+	
+// 	cam.transform = M4x4.I;
+// 	cam.translate(0,1,5);
+// 	document.writeln("translate: <pre>" + cam.transform.toMatrixFormString() + "</pre>");
+// 	cam.rotateY(Math.PI / 2.0);
+// 	document.writeln("translate & rotate: <pre>" + cam.transform.toMatrixFormString() + "</pre>");
+	
+	
 	
 	var light1 = new Light("light1", scene.rootNode);
 	light1.translate(5,3,5);
 	light1.colour = [0, 1, 0];
 	
 	var light2 = new Light("light2", scene.rootNode);
-	light2.translate(-5,3,5);
+	light2.translate(8,6,0);
 	light2.colour = [1, 0, 0];
 	light2.castShadows = true;
 
 	var light3 = new Light("light3", scene.rootNode);
-	light3.translate(0,3,-5);
+	light3.translate(0,6,-8);
 	light3.colour = [0, 0, 1];
+// 	light3.castShadows = true;
 	
 	
 	var sphere = new Sphere("sphere1", scene.rootNode);
 	sphere.translate(0,1,0);
+	
+	var sphere = new Sphere("sphere2", scene.rootNode);
+	sphere.translate(2,1,0);
+	
+	var sphere = new Sphere("sphere3", scene.rootNode);
+	sphere.translate(1,1,2);
+	
+// 	var sphere = new Sphere("sphere4", scene.rootNode);
+// 	sphere.scale(0.8,0.8,0.8);
+// 	sphere.translate(1,2.2,1);
 	
 	var plane = new Plane("plane1", scene.rootNode);
 	plane.scale(50,1,50);

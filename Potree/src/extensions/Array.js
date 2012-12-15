@@ -30,3 +30,41 @@ Array.prototype.contains = function(element){
 	var index = this.indexOf(element);
 	return index != -1;
 };
+
+Object.defineProperties(Array.prototype, {
+	'x':  {
+		get: function(){
+			return this[0];
+		}
+	},
+	'y':  {
+		get: function(){
+			return this[1];
+		}
+	},
+	'z':  {
+		get: function(){
+			return this[2];
+		}
+	},
+	'r':  {
+		get: function(){
+			return this[0];
+		}
+	},
+	'g':  {
+		get: function(){
+			return this[1];
+		}
+	},
+	'b':  {
+		get: function(){
+			return this[2];
+		}
+	},
+	'a':  {
+		get: function(){
+			return this[3];
+		}
+	}
+});

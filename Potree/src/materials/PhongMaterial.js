@@ -148,6 +148,7 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue,
 		
 //		var lcam = new Camera();
 //		lcam.translate(0,1,3);
+//		var lcam = light.shadowmap.camera;
 //		gl.uniformMatrix4fv(shader.uLightView, false, lcam.viewMatrix);
 //		gl.uniformMatrix4fv(shader.uLightProjection, false, lcam.projectionMatrix);
 		
@@ -156,6 +157,7 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue,
 				var shadowmap = light.shadowmap;
 				
 				gl.activeTexture(gl.TEXTURE0);
+//				gl.bindTexture(gl.TEXTURE_CUBE_MAP, shadowmap.framebuffer.texture.glid);
 				gl.bindTexture(gl.TEXTURE_2D, shadowmap.framebuffer.texture.glid);
 				gl.uniform1i(shader.uShadowMap, 0);
 				gl.uniform1i(shader.uCastShadows, true);
