@@ -133,32 +133,35 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue,
 	}
 	
 	var lights = renderQueue.lights;
-//	var lights = {}; //scene.lights;
-//	lights["light1"] = new Light("light1");
-//	lights["light1"].translate(-30,10,10);
-//	lights["light2"] = new Light("light2");
-//	lights["light2"].translate(+30,10,10);
 	
+//	var lightPositions = new Float32Array(lights.length * 3);
+//	var lightColors = new Float32Array(lights.length * 3);
+	gl.uniform1i(shader.uNumLights, lights.length);
 	for(var i = 0; i < lights.length; i++){
 		var light = lights[i];
 		var lightPos = light.globalPosition;
-		gl.uniform3f(shader.uLightPos, lightPos[0], lightPos[1], lightPos[2]);
+		var lightDir = light.getGlobalDirection();
+//		lightPositions[i*3+0] = lightPos.x;
+//		lightPositions[i*3+1] = lightPos.y;
+//		lightPositions[i*3+2] = lightPos.z;
+//		
+//		lightColors[i*3+0] = light.red;
+//		lightColors[i*3+1] = light.green;
+//		lightColors[i*3+2] = light.blue;
+		
+		
+		gl.uniform3f(shader.uLightPos, lightPos.x, lightPos.y, lightPos.z);
+		gl.uniform3f(shader.uLightDir, lightDir.x, lightDir.y, lightDir.z);
 		gl.uniform3f(shader.uLightColor, light.red, light.green, light.blue);
-		
-		
-//		var lcam = new Camera();
-//		lcam.translate(0,1,3);
-//		var lcam = light.shadowmap.camera;
-//		gl.uniformMatrix4fv(shader.uLightView, false, lcam.viewMatrix);
-//		gl.uniformMatrix4fv(shader.uLightProjection, false, lcam.projectionMatrix);
-		
+		gl.uniform1i(shader.uLightType, light.type);
+		gl.uniform1i(shader.uCastShadows, false);
 		
 		if(light.castShadows && light.shadowmap != undefined){
 				var shadowmap = light.shadowmap;
 				
 				gl.activeTexture(gl.TEXTURE0);
-//				gl.bindTexture(gl.TEXTURE_CUBE_MAP, shadowmap.framebuffer.texture.glid);
-				gl.bindTexture(gl.TEXTURE_2D, shadowmap.framebuffer.texture.glid);
+				gl.bindTexture(gl.TEXTURE_CUBE_MAP, shadowmap.framebuffer.texture.glid);
+//				gl.bindTexture(gl.TEXTURE_2D, shadowmap.framebuffer.texture.glid);
 				gl.uniform1i(shader.uShadowMap, 0);
 				gl.uniform1i(shader.uCastShadows, true);
 				
@@ -176,8 +179,6 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue,
 			gl.enable(gl.BLEND);
 			gl.blendFunc(gl.ONE, gl.ONE);
 		}
-		
-		
 		if(subMesh.ibo != null){
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, subMesh.ibo);
 			gl.drawElements(mesh.glType, subMesh.indices.length, gl.UNSIGNED_SHORT, 0);
@@ -190,5 +191,9 @@ PhongMaterial.prototype.renderSubMesh = function(subMesh, meshNode, renderQueue,
 	}
 	
 	gl.disable(gl.BLEND);
+//	gl.uniform3fv(shader.uLightPos, lightPositions);
+//	gl.uniform3fv(shader.uLightColor, lightColors);
+	
+	
 	
 };

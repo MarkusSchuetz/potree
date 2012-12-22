@@ -19,17 +19,17 @@ function LightType() {
 /**
  * @constant
  */
-LightType.OMNI = "";
+LightType.OMNI = 0;
 
 /**
  * @constant
  */
-LightType.SPOT = "";
+LightType.SPOT = 1;
 
 /**
  * @constant
  */
-LightType.DIRECTIONAL = "";
+LightType.DIRECTIONAL = 2;
 
 /**
  * 

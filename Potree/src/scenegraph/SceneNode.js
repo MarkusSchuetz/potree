@@ -233,6 +233,32 @@ SceneNode.prototype.scale = function(x, y, z) {
 	this._transform = M4x4.scale3(x, y, z, this._transform);
 };
 
+SceneNode.prototype.lookAt = function(target){
+	//TODO check for correctness
+	//TODO probably will not work if this sceneNodes parent transformation is != Identity
+	//TODO up-vector is always 0/1/0. check for linear independance
+	
+	var nPos = this.globalPosition;
+	
+	var dz = V3.direction(nPos, target);
+	var dy = V3.$(0,1,0);
+	var dx = V3.cross(dy, dz);
+	dy = V3.cross(dz, dx);
+	
+	dx = V3.neg(dx);
+	dy = V3.neg(dy);
+	dz = V3.neg(dz);
+	
+	var lookAt = M4x4.$(
+			dx.x, dx.y, dx.z, 0,
+			dy.x, dy.y, dy.z, 0,
+			dz.x, dz.y, dz.z, 0,
+			0,	0,	0,	1);
+	var translate = M4x4.makeTranslate3(nPos.x, nPos.y, nPos.z);
+	
+	this.transform = M4x4.mul(translate, lookAt);
+};
+
 SceneNode.prototype.render = function(camera) {
 	// in unterklassen überschreiben
 
